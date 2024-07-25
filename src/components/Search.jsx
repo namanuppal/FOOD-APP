@@ -1,9 +1,16 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useLocation } from 'react-router-dom';
 
 function Search() {
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState([]);
+  const location = useLocation();
+
+  // Don't render the Search component on signin and signup pages
+  if (location.pathname === '/signin' || location.pathname === '/signup') {
+    return null;
+  }
 
   const handleInputChange = (e) => {
     setSearchTerm(e.target.value);
@@ -19,14 +26,10 @@ function Search() {
       const foodItemsResponse = await axios.get('https://api-production-9183.up.railway.app/foodItemApi');
       const foodItems = foodItemsResponse.data;
 
-      console.log('Search Term:', searchTerm); // Log the search term
-
       // Filter foods based on search term
       const filteredFoods = foods.filter(food =>
         food.title.toLowerCase().includes(searchTerm.toLowerCase())
       );
-
-      console.log('Filtered Foods:', filteredFoods); // Log filtered foods
 
       // Filter menu items based on search term
       const filteredMenuItems = foodItems.menu.flatMap(category =>
@@ -40,8 +43,6 @@ function Search() {
           price: item.price
         }))
       );
-
-      console.log('Filtered Menu Items:', filteredMenuItems); // Log filtered menu items
 
       // Combine the filtered results
       const combinedResults = [
