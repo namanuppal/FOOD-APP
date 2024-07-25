@@ -1,0 +1,1 @@
+export const api = "https://api-production-9183.up.railway.app/foods"
