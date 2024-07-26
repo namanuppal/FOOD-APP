@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import CustomSuccessModal from "./CustomSuccessModal";
+import CustomSuccessModal from "./CustomSuccessModal"; // Optional: custom modal for success messages
 
 function SignUp() {
   const [formData, setFormData] = useState({
@@ -21,7 +21,7 @@ function SignUp() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const url = "https://api-production-9110.up.railway.app/signup"; // Your backend signup endpoint
+    const url = "https://api-production-9110.up.railway.app/signup";
 
     setError(""); // Clear previous errors
 
@@ -44,16 +44,13 @@ function SignUp() {
         throw new Error(errorData.error || "An error occurred");
       }
 
-      // Assuming the response contains a verification token or other relevant data
-      const responseData = await response.json();
       setMessage("Sign up successful! Please check your email for verification.");
       setShowModal(true);
 
-      // Redirect to verification page with the token if available
       setTimeout(() => {
         setShowModal(false);
-        navigate(`/verify/${responseData.verificationToken}`); // Redirect with token
-      }, 2000); // Delay for modal display
+        navigate("/verify"); // Redirect to the verification page
+      }, 2000); // Redirect after 2 seconds
     } catch (error) {
       console.error("Error during request:", error);
       setError(error.message);

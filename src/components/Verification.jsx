@@ -1,39 +1,45 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 
 function Verification() {
-  const { token } = useParams(); // Extract token from URL parameters
-  const [status, setStatus] = useState(''); // Verification status
-  const [loading, setLoading] = useState(true); // Loading state
+  const { token } = useParams();
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const verifyToken = async () => {
+    const verifyUser = async () => {
       try {
-        const response = await axios.get(`https://api-production-9110.up.railway.app/verify/${token}`);
-        if (response.status === 200) {
-          setStatus('Your account has been successfully verified!');
-        } else {
-          setStatus('Verification failed. Please try again.');
+        const response = await fetch(`https://api-production-9110.up.railway.app/verify/${token}`, {
+          method: 'GET',
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'An error occurred');
         }
+
+        setMessage('Account verified successfully!');
+        
+        setTimeout(() => {
+          navigate('/signin'); // Redirect to the sign-in page after verification
+        }, 3000); // Redirect after 3 seconds
       } catch (error) {
-        setStatus('Verification failed. Please try again.');
-      } finally {
-        setLoading(false); // Set loading to false after the request completes
+        console.error('Error during verification:', error);
+        setError(error.message);
       }
     };
 
-    verifyToken();
-  }, [token]);
+    verifyUser();
+  }, [token, navigate]);
 
   return (
-    <div className='container mx-auto my-10 px-4'>
-      <h1 className='text-3xl font-bold text-center mb-8'>Verification Status</h1>
-      {loading ? (
-        <p className='text-center text-xl'>Verifying...</p>
-      ) : (
-        <p className='text-center text-xl'>{status}</p>
-      )}
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
+        <h2 className="text-2xl font-bold mb-6">Account Verification</h2>
+        {message && <div className="mb-4 text-green-600">{message}</div>}
+        {error && <div className="mb-4 text-red-600">{error}</div>}
+      </div>
     </div>
   );
 }
