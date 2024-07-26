@@ -7,7 +7,7 @@ function SignUp() {
     name: "",
     email: "",
     password: "",
-    avatar: null
+    avatar: null,
   });
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
@@ -22,7 +22,9 @@ function SignUp() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const url = "https://api-production-9183.up.railway.app/auth/signup";
-  
+
+    setError(""); // Clear previous errors
+
     try {
       const data = new FormData();
       data.append("name", formData.name);
@@ -31,24 +33,23 @@ function SignUp() {
       if (formData.avatar) {
         data.append("avatar", formData.avatar);
       }
-  
+
       const response = await fetch(url, {
         method: "POST",
         body: data,
-        credentials: "include",
       });
-  
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || "An error occurred");
       }
-  
-      setMessage("Sign up successful! Redirecting to sign in...");
+
+      setMessage("Sign up successful! Please check your email for verification.");
       setShowModal(true);
-      setError("");
+
       setTimeout(() => {
         setShowModal(false);
-        navigate("/signin");
+        navigate("/verify"); // Redirect to the verification page
       }, 2000); // Redirect after 2 seconds
     } catch (error) {
       console.error("Error during request:", error);
@@ -75,6 +76,7 @@ function SignUp() {
               value={formData.name}
               onChange={handleChange}
               placeholder="Enter your name"
+              required
             />
           </div>
           <div className="mb-4">
@@ -88,6 +90,7 @@ function SignUp() {
               value={formData.email}
               onChange={handleChange}
               placeholder="Enter your email"
+              required
             />
           </div>
           <div className="mb-4">
@@ -101,6 +104,7 @@ function SignUp() {
               value={formData.password}
               onChange={handleChange}
               placeholder="Enter your password"
+              required
             />
           </div>
           <div className="mb-4">
@@ -115,25 +119,14 @@ function SignUp() {
             />
           </div>
           <button
-            className="w-full bg-blue-500 text-white py-2 rounded"
+            className="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
             type="submit"
           >
             Sign Up
           </button>
         </form>
-        <p className="mt-6 text-center">
-          Already have an account?{" "}
-          <a href="/signin">
-            <button
-              className="text-blue-500 hover:underline focus:outline-none"
-              onClick={() => navigate("/signin")}
-            >
-              Sign In
-            </button>
-          </a>
-        </p>
+        {showModal && <CustomSuccessModal message={message} />}
       </div>
-      <CustomSuccessModal show={showModal} onClose={() => setShowModal(false)} />
     </div>
   );
 }

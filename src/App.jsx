@@ -8,6 +8,7 @@ import Search from './components/Search';
 import FoodDetails from './components/FoodDetails';
 import RestaurantInfoDetails from './components/RestaurantInfoDetails';
 import SignUp from './components/Signup';
+import Verification from './components/Verification'
 
 function App() {
   const router = createBrowserRouter(
@@ -21,6 +22,7 @@ function App() {
           <Route path='/search' element={<Search />} />
           <Route path='/productDetails/:id' element={<FoodDetails/>} />
           <Route path='/restaurantInfoDetails/:id' element={<RestaurantInfoDetails/>} />
+          <Route path="/verify/:token" element={<Verification />} />
         </Route>
       </Route>
     )

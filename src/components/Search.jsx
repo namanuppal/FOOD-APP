@@ -1,122 +1,93 @@
 import React, { useState } from 'react';
-import axios from 'axios';
-import { useLocation } from 'react-router-dom';
+import axios from 'axios'; // Axios for API requests
+import { api } from './api'; // Ensure this path is correct
 
-function Search() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [results, setResults] = useState([]);
-  const location = useLocation();
+const Search = () => {
+  const [query, setQuery] = useState(''); // Search query state
+  const [results, setResults] = useState([]); // Search results state
+  const [loading, setLoading] = useState(false); // Loading state
+  const [error, setError] = useState(null); // Error state
 
-  // Don't render the Search component on signin and signup pages
-  if (location.pathname === '/signin' || location.pathname === '/signup') {
-    return null;
-  }
-
-  const handleInputChange = (e) => {
-    setSearchTerm(e.target.value);
-  };
-
+  // Function to handle the search
   const handleSearch = async () => {
+    setLoading(true); // Set loading to true when starting search
+    setError(null); // Clear any previous errors
+
     try {
-      // Fetch foods data
-      const foodsResponse = await axios.get('https://api-production-9183.up.railway.app/foods');
-      const foods = foodsResponse.data;
+      // Verify the API URL
+      console.log("API URL:", api);
+      console.log("Query:", query);
 
-      // Fetch food items data
-      const foodItemsResponse = await axios.get('https://api-production-9183.up.railway.app/foodItemApi');
-      const foodItems = foodItemsResponse.data;
+      const response = await axios.get(api);
 
-      // Filter foods based on search term
-      const filteredFoods = foods.filter(food =>
-        food.title.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+      // Log API response data for debugging
+      console.log("API Response Data:", response.data);
 
-      // Filter menu items based on search term
-      const filteredMenuItems = foodItems.menu.flatMap(category =>
-        category.items.filter(item =>
-          item.name.toLowerCase().includes(searchTerm.toLowerCase())
-        ).map(item => ({
-          type: 'menuItem',
-          category: category.category,
-          id: item.id,
-          name: item.name,
-          price: item.price
-        }))
-      );
+      // Filter restaurants based on the search query
+      const filteredResults = response.data.filter(restaurant => {
+        return restaurant.menu.some(category => 
+          category.items.some(item => 
+            item.name.toLowerCase().includes(query.toLowerCase())
+          )
+        );
+      });
 
-      // Combine the filtered results
-      const combinedResults = [
-        ...filteredFoods.map(food => ({
-          type: 'food',
-          id: food.id,
-          title: food.title,
-          img: food.img,
-          description: food.restaurants.map(restaurant => restaurant.name).join(', ')
-        })),
-        ...filteredMenuItems
-      ];
+      setResults(filteredResults);
 
-      setResults(combinedResults);
     } catch (error) {
-      console.error('Error fetching search results:', error);
+      console.error("Error fetching data: ", error);
+      setError(`An error occurred while fetching data: ${error.message}`);
+    } finally {
+      setLoading(false); // Set loading to false when done
     }
   };
 
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      handleSearch();
-    }
+  // Function to handle input change
+  const handleChange = (event) => {
+    setQuery(event.target.value);
+  };
+
+  // Function to handle form submit
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    handleSearch();
   };
 
   return (
-    <div className="flex flex-col items-center mt-2 p-2">
-      <div className="flex flex-col md:flex-row justify-center items-center w-full md:w-3/4 lg:w-1/2">
+    <div className="flex flex-col items-center p-6 bg-gray-200">
+      <form onSubmit={handleSubmit} className="w-full max-w-4xl flex">
         <input
-          className="border border-gray-300 px-4 py-1 w-full md:w-[350px] rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="Search for Foods and Menu Items"
           type="text"
-          name="search"
-          aria-label="Search for Foods"
-          value={searchTerm}
-          onChange={handleInputChange}
-          onKeyPress={handleKeyPress}
+          value={query}
+          onChange={handleChange}
+          placeholder="Search for food or restaurants"
+          className="flex-1 px-4 py-2 border border-gray-300 rounded-l-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
         />
-        <button
-          className="bg-blue-500 text-white px-3 py-1 mt-1 md:mt-0 md:ml-2 rounded-r-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          onClick={handleSearch}
-        >
+        <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded-r-lg shadow-md hover:bg-blue-700 transition duration-300">
           Search
         </button>
-      </div>
-      <div className="mt-2 w-full md:w-3/4 lg:w-1/2">
-        {results.length > 0 && (
-          <ul className="bg-white shadow-md rounded-lg p-2">
-            {results.map((result, index) => (
-              <li key={index} className="py-2 border-b last:border-b-0 flex items-center">
-                {result.type === 'food' ? (
-                  <div className="flex items-center">
-                    <img src={result.img} alt={result.title} className="w-16 h-16 object-cover rounded mr-4" />
-                    <div>
-                      <h3 className="font-bold">{result.title}</h3>
-                      <p>{result.description}</p>
-                    </div>
-                  </div>
-                ) : result.type === 'menuItem' ? (
-                  <div className="flex items-center">
-                    <div>
-                      <h3 className="font-bold">{result.name}</h3>
-                      <p>Category: {result.category}</p>
-                      <p>Price: ₹{result.price}</p>
-                    </div>
-                  </div>
-                ) : null}
-              </li>
-            ))}
-          </ul>
-        )}
+      </form>
+      {loading && <p className="text-blue-600">Loading...</p>}
+      {error && <p className="mt-4 text-red-600">{error}</p>}
+      <div className="w-full max-w-4xl overflow-x-auto">
+        <div className="flex flex-nowrap space-x-6 p-4">
+          {results.length > 0 ? (
+            results.map((item) => (
+              <div key={item.id} className="flex-shrink-0 w-64 bg-white shadow-lg rounded-lg p-4">
+                <h3 className="text-xl font-semibold mb-2">{item.name}</h3>
+                <p className="text-gray-700 mb-2">{item.location}</p>
+                <p className="text-yellow-500 mb-2">Rating: {item.rating}</p>
+                <p className="text-gray-600 mb-2">{item.reviews}</p>
+                <img src={item.img} alt={item.name} className="w-full h-32 object-cover rounded-lg mt-2" />
+              </div>
+            ))
+          ) : (
+            <p className="text-gray-600">Please search for food</p>
+          )}
+        </div>
       </div>
     </div>
   );
-}
+};
 
 export default Search;

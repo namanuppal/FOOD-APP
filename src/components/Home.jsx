@@ -1,53 +1,67 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { api } from './api';
+import { Link } from 'react-router-dom';
 
-function Home() {
-  const [meals, setMeals] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  const fetchMeals = async () => {
-    try {
-      const response = await fetch(api);
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const data = await response.json();
-      setMeals(data);
-      setLoading(false);
-    } catch (error) {
-      console.error(error);
-      setError(error.message);
-      setLoading(false);
-    }
-  };
+const Homepage = () => {
+  const [foods, setFoods] = useState([]);
 
   useEffect(() => {
-    fetchMeals();
+    const fetchFoods = async () => {
+      try {
+        const response = await fetch(api);
+        const data = await response.json();
+
+        // Create a Set to track unique categories
+        const uniqueCategories = new Set();
+        const filteredFoods = [];
+
+        // Loop through each restaurant and its menu
+        data.forEach((restaurant) => {
+          restaurant.menu.forEach((item) => {
+            if (!uniqueCategories.has(item.category)) {
+              uniqueCategories.add(item.category);
+              filteredFoods.push({
+                id: item.id, // Ensure you add the id here
+                category: item.category,
+                img: item.img,
+              });
+            }
+          });
+        });
+
+        setFoods(filteredFoods);
+      } catch (error) {
+        console.error('Error fetching foods:', error);
+      }
+    };
+
+    fetchFoods();
   }, []);
 
-  if (loading) return <h1 className='text-center text-2xl font-bold my-10 text-orange-500'>Loading...</h1>;
-  if (error) return <h1 className='text-center text-2xl font-bold my-10 text-red-500'>Error: {error}</h1>;
-
   return (
-    <div className='container mx-auto my-10 px-4'>
-      <h1 className='text-3xl font-bold text-center mb-8'>Welcome to Our Meal Gallery</h1>
-      <div className='grid gap-6 grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'>
-        {meals.map((joke) => (
-          <div key={joke.id} className='bg-white rounded-lg overflow-hidden shadow-lg'>
-            <Link to={`/productDetails/${joke.id}`}>
-              <img src={joke.img} alt={joke.title} className='w-full h-48 object-cover' />
+    <div className="container mx-auto p-4">
+      <h1 className="text-4xl font-extrabold mb-8 text-center text-gray-800">Our Delicious Foods</h1>
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {foods.map((food, index) => (
+          <div
+            key={index}
+            className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 ease-in-out transform hover:-translate-y-1"
+          >
+            <Link to={`/productDetails/${food.id}`} className="block overflow-hidden rounded-t-lg">
+              <img
+                src={food.img}
+                alt={food.category}
+                className="w-full h-48 object-cover transition-transform duration-200 ease-in-out hover:scale-105"
+              />
             </Link>
-            <div className='p-4'>
-              <h3 className='text-xl font-bold mb-2'>{joke.title}</h3>
-              <p className='text-gray-700'>{joke.description}</p>
+            <div className="p-4 text-center">
+              <h2 className="text-lg font-semibold text-gray-700">{food.category}</h2>
             </div>
           </div>
         ))}
       </div>
     </div>
   );
-}
+};
 
-export default Home;
+export default Homepage;
