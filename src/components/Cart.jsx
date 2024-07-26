@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getCart, clearCart } from '../middleware/cart';
 import paymentGateway from './paymentGateway';
+import { api } from './api';
 
 function Cart({ id }) {
   const [selectedRestaurant, setSelectedRestaurant] = useState(null);
@@ -9,7 +10,7 @@ function Cart({ id }) {
 
   useEffect(() => {
     async function fetchData() {
-      const response = await fetch('https://api-production-9183.up.railway.app/foodItemApi');
+      const response = await fetch(api);
       const data = await response.json();
       const restaurant = data.find(item => item.id === parseInt(id));
       setSelectedRestaurant(restaurant);

@@ -21,7 +21,7 @@ function SignUp() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const url = "https://api-production-9183.up.railway.app/auth/signup";
+    const url = "https://api-production-9110.up.railway.app/signup"; // Your backend signup endpoint
 
     setError(""); // Clear previous errors
 
@@ -44,13 +44,16 @@ function SignUp() {
         throw new Error(errorData.error || "An error occurred");
       }
 
+      // Assuming the response contains a verification token or other relevant data
+      const responseData = await response.json();
       setMessage("Sign up successful! Please check your email for verification.");
       setShowModal(true);
 
+      // Redirect to verification page with the token if available
       setTimeout(() => {
         setShowModal(false);
-        navigate("/verify"); // Redirect to the verification page
-      }, 2000); // Redirect after 2 seconds
+        navigate(`/verify/${responseData.verificationToken}`); // Redirect with token
+      }, 2000); // Delay for modal display
     } catch (error) {
       console.error("Error during request:", error);
       setError(error.message);

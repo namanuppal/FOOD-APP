@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
 
 function SignIn() {
   const [formData, setFormData] = useState({
@@ -17,7 +17,7 @@ function SignIn() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const url = "https://api-production-9183.up.railway.app/auth/signin";
+    const url = "https://your-backend-api.com/signin"; // Update with your actual sign-in endpoint
   
     try {
       const response = await fetch(url, {
@@ -29,7 +29,7 @@ function SignIn() {
           email: formData.email,
           password: formData.password,
         }),
-        credentials: "include", // If needed
+        credentials: "include", // Include credentials if needed
       });
   
       if (!response.ok) {
@@ -44,8 +44,6 @@ function SignIn() {
       setError("");
     } catch (error) {
       console.error("Error during request:", error); // Log detailed error
-      console.error("Error message:", error.message);
-      console.error("Error stack:", error.stack);
       setError(error.message);
       setMessage("");
     }
@@ -69,6 +67,7 @@ function SignIn() {
               value={formData.email}
               onChange={handleChange}
               placeholder="Enter your email"
+              required
             />
           </div>
           <div className="mb-4">
@@ -82,10 +81,11 @@ function SignIn() {
               value={formData.password}
               onChange={handleChange}
               placeholder="Enter your password"
+              required
             />
           </div>
           <button
-            className="w-full bg-blue-500 text-white py-2 rounded"
+            className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
             type="submit"
           >
             Sign In
