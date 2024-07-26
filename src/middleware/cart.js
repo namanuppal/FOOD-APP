@@ -1,4 +1,3 @@
-// cart.js
 let cart = [];
 
 export const addToCart = (item) => {

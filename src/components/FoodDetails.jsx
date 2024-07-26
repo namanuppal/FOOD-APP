@@ -66,7 +66,7 @@ function FoodDetails() {
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-center text-4xl font-extrabold my-8 text-gray-800">
-        Restaurants
+        Cafe and Restaurants
       </h1>
       {restaurants.length > 0 ? (
         <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">

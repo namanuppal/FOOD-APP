@@ -40,7 +40,7 @@ const Homepage = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-4xl font-extrabold mb-8 text-center text-gray-800">Our Delicious Foods</h1>
+      <h1 className="text-4xl font-extrabold mb-8 text-center text-gray-800">The Delicious Foods</h1>
       <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {foods.map((food, index) => (
           <div

@@ -1,12 +1,19 @@
 import React, { useState } from 'react';
 import axios from 'axios'; // Axios for API requests
 import { api } from './api'; // Ensure this path is correct
+import { useLocation } from 'react-router-dom';
 
 const Search = () => {
   const [query, setQuery] = useState(''); // Search query state
   const [results, setResults] = useState([]); // Search results state
   const [loading, setLoading] = useState(false); // Loading state
   const [error, setError] = useState(null); // Error state
+
+  const location = useLocation();
+  const isSearchinAuthPage = location.pathname === '/signup' || location.pathname === '/signin';
+  if(isSearchinAuthPage){
+    return null;
+  }
 
   // Function to handle the search
   const handleSearch = async () => {

@@ -1,1 +1,1 @@
-export const api = "https://api-production-9183.up.railway.app/foods_restaurants"
+export const api = "https://api-production-9110.up.railway.app/foods_restaurants"

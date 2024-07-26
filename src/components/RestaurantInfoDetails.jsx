@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { FaCartPlus } from 'react-icons/fa';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { addToCart } from '../middleware/cart';
-import { useParams } from 'react-router-dom';
-import { api } from './api';
+import React, { useState, useEffect } from "react";
+import { FaCartPlus } from "react-icons/fa";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { addToCart } from "../middleware/cart";
+import { useParams } from "react-router-dom";
+import { api } from "./api";
 
 function RestaurantInfoDetails() {
   const { id } = useParams();
@@ -17,7 +17,7 @@ function RestaurantInfoDetails() {
       try {
         const response = await fetch(api);
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+          throw new Error("Network response was not ok");
         }
         const data = await response.json();
 
@@ -29,11 +29,11 @@ function RestaurantInfoDetails() {
         if (selectedRestaurant) {
           setRestaurant(selectedRestaurant);
         } else {
-          throw new Error('Restaurant not found');
+          throw new Error("Restaurant not found");
         }
         setLoading(false);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
         setError(error.message);
         setLoading(false);
       }
@@ -49,7 +49,7 @@ function RestaurantInfoDetails() {
       price,
     };
     addToCart(cartItem);
-    toast.success(`Added ${item.name} (${size}) to cart!`);
+    toast.success(`Added ${item.name} (${price}) to cart!`);
   };
 
   if (loading) {
@@ -134,7 +134,7 @@ function RestaurantInfoDetails() {
                   <>
                     <p className="text-gray-600 mb-4">Price: ₹{item.price}</p>
                     <button
-                      onClick={() => handleAddToCart(item)}
+                      onClick={() => handleAddToCart(item, null, item.price)}
                       className="mt-2 flex items-center justify-center w-full text-white bg-orange-500 hover:bg-orange-600 p-2 rounded-lg transition-colors duration-200 ease-in-out"
                     >
                       <FaCartPlus className="mr-2" />
