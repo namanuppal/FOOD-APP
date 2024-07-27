@@ -7,9 +7,9 @@ import Cart from './components/Cart';
 import Search from './components/Search';
 import FoodDetails from './components/FoodDetails';
 import RestaurantInfoDetails from './components/RestaurantInfoDetails';
-import SignUp from './components/SignUp';
 import Verification from './components/Verification';
 import PrivateRoute from './components/PrivateRoute';
+import SignUp from './components/Signup';
 import Layout from './Layout';
 
 function App() {

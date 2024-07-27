@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import CustomSuccessModal from "./CustomSuccessModal"; // Optional: custom modal for success messages
+import CustomSuccessModal from "./CustomSuccessModal";
 
 function SignUp() {
   const [formData, setFormData] = useState({
@@ -21,49 +21,62 @@ function SignUp() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const url = "https://api-production-9110.up.railway.app/signup";
-
-    setError(""); // Clear previous errors
-
+    const url = "https://api-production-f5b0.up.railway.app/signup";
+  
+    setError(""); // Sare purane error clear!
+  
+    const data = new FormData();
+    data.append("name", formData.name);
+    data.append("email", formData.email);
+    data.append("password", formData.password);
+    if (formData.avatar) {
+      data.append("avatar", formData.avatar);
+    }
+  
+    // console.log the FormData entries
+    for (const [key, value] of data.entries()) {
+      console.log(`${key}:`, value);
+    }
+  
     try {
-      const data = new FormData();
-      data.append("name", formData.name);
-      data.append("email", formData.email);
-      data.append("password", formData.password);
-      if (formData.avatar) {
-        data.append("avatar", formData.avatar);
-      }
-
       const response = await fetch(url, {
         method: "POST",
         body: data,
       });
-
+  
       if (!response.ok) {
         const errorData = await response.json();
+        console.error('Server response error:', errorData);
         throw new Error(errorData.error || "An error occurred");
       }
-
+  
       setMessage("Sign up successful! Please check your email for verification.");
       setShowModal(true);
-
+  
       setTimeout(() => {
         setShowModal(false);
-        navigate("/verify"); // Redirect to the verification page
-      }, 2000); // Redirect after 2 seconds
+        navigate("/verify");
+      }, 2000);
     } catch (error) {
       console.error("Error during request:", error);
       setError(error.message);
       setMessage("");
     }
   };
+  
+  
+  
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
         <h2 className="text-2xl font-bold mb-6">Sign Up</h2>
+        {/* {Showing message.} */}
         {message && <div className="mb-4 text-green-600">{message}</div>}
+        {/* {Showing error.} */}
         {error && <div className="mb-4 text-red-600">{error}</div>}
+
+        {/* Form Start Now */}
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-gray-700 mb-2" htmlFor="name">
@@ -79,6 +92,8 @@ function SignUp() {
               required
             />
           </div>
+
+
           <div className="mb-4">
             <label className="block text-gray-700 mb-2" htmlFor="email">
               Email
@@ -93,6 +108,8 @@ function SignUp() {
               required
             />
           </div>
+
+
           <div className="mb-4">
             <label className="block text-gray-700 mb-2" htmlFor="password">
               Password
@@ -107,6 +124,8 @@ function SignUp() {
               required
             />
           </div>
+
+
           <div className="mb-4">
             <label className="block text-gray-700 mb-2" htmlFor="avatar">
               Avatar
@@ -118,6 +137,8 @@ function SignUp() {
               onChange={handleChange}
             />
           </div>
+
+
           <button
             className="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
             type="submit"

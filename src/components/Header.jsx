@@ -11,7 +11,7 @@ function Header() {
       try {
         const token = localStorage.getItem('token');
         if (token) {
-          const response = await axios.get('https://api-production-9183.up.railway.app/auth/profile', {
+          const response = await axios.get('https://api-production-f5b0.up.railway.app/profile', {
             headers: {
               Authorization: `Bearer ${token}`,
             },

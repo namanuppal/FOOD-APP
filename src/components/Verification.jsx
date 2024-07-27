@@ -10,7 +10,7 @@ function Verification() {
   useEffect(() => {
     const verifyUser = async () => {
       try {
-        const response = await fetch(`https://api-production-9110.up.railway.app/verify/${token}`, {
+        const response = await fetch(`https://api-production-f5b0.up.railway.app/verify/${token}`, {
           method: 'GET',
         });
 
