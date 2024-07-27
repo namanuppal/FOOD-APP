@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function SignIn() {
   const [formData, setFormData] = useState({
@@ -8,7 +8,18 @@ function SignIn() {
   });
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkAuthentication = () => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        navigate('/profile'); // Redirect if already logged in
+      }
+    };
+    
+    checkAuthentication();
+  }, [navigate]);
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -17,7 +28,7 @@ function SignIn() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const url = "https://api-production-f5b0.up.railway.app/signin"; // Update with your actual sign-in endpoint
+    const url = "https://api-production-f5b0.up.railway.app/signin";
   
     try {
       const response = await fetch(url, {
@@ -29,7 +40,7 @@ function SignIn() {
           email: formData.email,
           password: formData.password,
         }),
-        credentials: "include", // Include credentials if needed
+        credentials: "include",
       });
   
       if (!response.ok) {
@@ -40,10 +51,10 @@ function SignIn() {
       const result = await response.json();
       localStorage.setItem("token", result.token);
       setMessage("Sign in successful!");
-      navigate("/"); // Redirect to homepage
+      navigate("/profile"); // Redirect to profile
       setError("");
     } catch (error) {
-      console.error("Error during request:", error); // Log detailed error
+      console.error("Error during request:", error);
       setError(error.message);
       setMessage("");
     }

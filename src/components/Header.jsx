@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+  
+  // Default avatar URL
+  const defaultAvatar = 'https://via.placeholder.com/150'; // Default image URL
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -16,7 +20,10 @@ function Header() {
               Authorization: `Bearer ${token}`,
             },
           });
+          console.log('Fetched User:', response.data); // Debug log
           setUser(response.data);
+        } else {
+          console.log('No token found'); // Debug log
         }
       } catch (error) {
         console.error('Error fetching user profile:', error);
@@ -25,6 +32,12 @@ function Header() {
 
     fetchUserProfile();
   }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setUser(null);
+    navigate('/signin'); // Redirect to sign-in page
+  };
 
   return (
     <header className='shadow-lg sticky z-50 top-0 bg-white'>
@@ -52,11 +65,15 @@ function Header() {
             <>
               <div className="flex items-center">
                 <img 
-                  src={`https://api-production-9183.up.railway.app/${user.avatar}`} 
+                  src={user.avatar ? `https://api-production-9183.up.railway.app/${user.avatar}` : defaultAvatar} 
                   alt="avatar" 
                   className="w-10 h-10 rounded-full mr-2" 
                 />
                 <span>{user.name}</span>
+                <Link to="/profile" className='ml-4 text-blue-500 hover:underline'>Profile</Link>
+                <button onClick={handleLogout} className='ml-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600'>
+                  Logout
+                </button>
               </div>
               <Link to="/cart" className='hover:text-gray-700'>Cart</Link>
             </>
@@ -73,11 +90,17 @@ function Header() {
             <>
               <div className="flex items-center py-2">
                 <img 
-                  src={`https://api-production-9183.up.railway.app/${user.avatar}`} 
+                  src={user.avatar ? `https://api-production-9183.up.railway.app/${user.avatar}` : defaultAvatar} 
                   alt="avatar" 
                   className="w-10 h-10 rounded-full mr-2" 
                 />
                 <span>{user.name}</span>
+                <Link to="/profile" className='w-full text-center py-2 bg-blue-500 text-white rounded hover:bg-blue-600'>
+                  Profile
+                </Link>
+                <button onClick={handleLogout} className='w-full text-center py-2 bg-red-500 text-white rounded hover:bg-red-600'>
+                  Logout
+                </button>
               </div>
               <Link to="/cart" className='w-full text-center py-2 hover:bg-gray-100' onClick={() => setMenuOpen(false)}>Cart</Link>
             </>

@@ -10,12 +10,14 @@ function Verification() {
   useEffect(() => {
     const verifyUser = async () => {
       try {
+        console.log('Verification token:', token); // Log token for debugging
         const response = await fetch(`https://api-production-f5b0.up.railway.app/verify/${token}`, {
           method: 'GET',
         });
 
         if (!response.ok) {
           const errorData = await response.json();
+          console.error('Server response error:', errorData); // Log server error
           throw new Error(errorData.message || 'An error occurred');
         }
 

@@ -1,82 +1,69 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import CustomSuccessModal from "./CustomSuccessModal";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import CustomSuccessModal from './CustomSuccessModal';
 
-function SignUp() {
+const SignUp = () => {
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
+    name: '',
+    email: '',
+    password: '',
     avatar: null,
   });
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { id, value, files } = e.target;
-    setFormData({ ...formData, [id]: files ? files[0] : value });
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      [id]: files ? files[0] : value,
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const url = "https://api-production-f5b0.up.railway.app/signup";
-  
-    setError(""); // Sare purane error clear!
-  
+    const url = 'https://api-production-f5b0.up.railway.app/signup';
+
+    setError('');
+    setMessage('');
+
     const data = new FormData();
-    data.append("name", formData.name);
-    data.append("email", formData.email);
-    data.append("password", formData.password);
+    data.append('name', formData.name);
+    data.append('email', formData.email);
+    data.append('password', formData.password);
     if (formData.avatar) {
-      data.append("avatar", formData.avatar);
+      data.append('avatar', formData.avatar);
     }
-  
-    // console.log the FormData entries
-    for (const [key, value] of data.entries()) {
-      console.log(`${key}:`, value);
-    }
-  
+
     try {
       const response = await fetch(url, {
-        method: "POST",
+        method: 'POST',
         body: data,
       });
-  
+
       if (!response.ok) {
         const errorData = await response.json();
-        console.error('Server response error:', errorData);
-        throw new Error(errorData.error || "An error occurred");
+        throw new Error(errorData.message || 'An error occurred');
       }
-  
-      setMessage("Sign up successful! Please check your email for verification.");
+
+      setMessage('Sign up successful! Please check your email for verification.');
       setShowModal(true);
-  
+
       setTimeout(() => {
         setShowModal(false);
-        navigate("/verify");
+        navigate('/signin');
       }, 2000);
     } catch (error) {
-      console.error("Error during request:", error);
+      console.error('Error during request:', error);
       setError(error.message);
-      setMessage("");
     }
   };
-  
-  
-  
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-6">Sign Up</h2>
-        {/* {Showing message.} */}
-        {message && <div className="mb-4 text-green-600">{message}</div>}
-        {/* {Showing error.} */}
-        {error && <div className="mb-4 text-red-600">{error}</div>}
-
-        {/* Form Start Now */}
+    <div className="container mx-auto p-4">
+      <div className="max-w-md mx-auto">
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-gray-700 mb-2" htmlFor="name">
@@ -93,7 +80,6 @@ function SignUp() {
             />
           </div>
 
-
           <div className="mb-4">
             <label className="block text-gray-700 mb-2" htmlFor="email">
               Email
@@ -108,7 +94,6 @@ function SignUp() {
               required
             />
           </div>
-
 
           <div className="mb-4">
             <label className="block text-gray-700 mb-2" htmlFor="password">
@@ -125,7 +110,6 @@ function SignUp() {
             />
           </div>
 
-
           <div className="mb-4">
             <label className="block text-gray-700 mb-2" htmlFor="avatar">
               Avatar
@@ -138,7 +122,6 @@ function SignUp() {
             />
           </div>
 
-
           <button
             className="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
             type="submit"
@@ -146,10 +129,20 @@ function SignUp() {
             Sign Up
           </button>
         </form>
+        {error && (
+          <div className="mt-4 text-red-500">
+            {error}
+          </div>
+        )}
+        {message && (
+          <div className="mt-4 text-green-500">
+            {message}
+          </div>
+        )}
         {showModal && <CustomSuccessModal message={message} />}
       </div>
     </div>
   );
-}
+};
 
 export default SignUp;
