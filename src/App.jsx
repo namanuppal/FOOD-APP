@@ -8,7 +8,7 @@ import Search from './components/Search';
 import FoodDetails from './components/FoodDetails';
 import RestaurantInfoDetails from './components/RestaurantInfoDetails';
 import Verification from './components/Verification';
-import PrivateRoute from './components/PrivateRoute';
+// import PrivateRoute from './components/PrivateRoute';
 import SignUp from './components/Signup';
 import Layout from './Layout';
 
@@ -20,7 +20,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
-          <Route path="/cart" element={<PrivateRoute element={<Cart />} />} />
+          <Route path="/cart" element={<Cart />} />
           <Route path="/search" element={<Search />} />
           <Route path="/productDetails/:id" element={<FoodDetails />} />
           <Route path="/restaurantInfoDetails/:id" element={<RestaurantInfoDetails />} />

@@ -3,7 +3,7 @@ import Razorpay from "razorpay";
 export default async function paymentGateway(totalAmount) {
   try {
     const response = await fetch(
-      "https://api-production-9110.up.railway.app/create-order",
+      "https://api-production-f5b0.up.railway.app/create-order",
       {
         method: "POST",
         headers: {
