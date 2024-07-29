@@ -21,7 +21,7 @@ const Homepage = () => {
             if (!uniqueCategories.has(item.category)) {
               uniqueCategories.add(item.category);
               filteredFoods.push({
-                id: item.id, // Ensure you add the id here
+                id: item.id,
                 category: item.category,
                 img: item.img,
               });
@@ -40,25 +40,31 @@ const Homepage = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-4xl font-extrabold mb-8 text-center text-gray-800">The Delicious Foods</h1>
-      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {foods.map((food, index) => (
-          <div
-            key={index}
-            className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 ease-in-out transform hover:-translate-y-1"
-          >
-            <Link to={`/productDetails/${food.id}`} className="block overflow-hidden rounded-t-lg">
-              <img
-                src={food.img}
-                alt={food.category}
-                className="w-full h-48 object-cover transition-transform duration-200 ease-in-out hover:scale-105"
-              />
-            </Link>
-            <div className="p-4 text-center">
-              <h2 className="text-lg font-semibold text-gray-700">{food.category}</h2>
+      <h1 className="text-4xl font-extrabold mb-8 text-center text-gray-800">
+        The Delicious Foods
+      </h1>
+      {/* Wrapper for horizontal scrolling */}
+      <div className="overflow-x-auto scrollbar-hide">
+        <div className="flex space-x-6">
+          {foods.map((food, index) => (
+            <div
+              key={index}
+              className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 ease-in-out transform hover:-translate-y-1"
+              style={{ minWidth: '200px' }} // Ensures each card has a minimum width
+            >
+              <Link to={`/productDetails/${food.id}`} className="block overflow-hidden rounded-t-lg">
+                <img
+                  src={food.img}
+                  alt={food.category}
+                  className="w-full h-48 object-cover transition-transform duration-200 ease-in-out hover:scale-105"
+                />
+              </Link>
+              <div className="p-4 text-center">
+                <h2 className="text-lg font-semibold text-gray-700">{food.category}</h2>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );
