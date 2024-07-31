@@ -16,7 +16,7 @@ import Verification from "./components/Verification";
 import SignUp from "./components/Signup";
 import Layout from "./Layout";
 import Profile from "./components/Profile";
-import PrivateRoute from "./components/PrivateRoute";
+// import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
   const router = createBrowserRouter(
@@ -25,7 +25,6 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/signin" element={<SignIn />} />
-          {/* <PrivateRoute path="/profile" element={<Profile />} /> */}
           <Route path="/signup" element={<SignUp />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/search" element={<Search />} />
@@ -49,3 +48,7 @@ function App() {
 }
 
 export default App;
+
+
+
+// side bar on home and header

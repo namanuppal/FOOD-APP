@@ -25,7 +25,7 @@ const Search = () => {
 
     try {
       // Verify the API URL
-      console.log("API URL:", api);
+      // console.log("API URL:", api);
       console.log("Query:", query);
 
       const response = await axios.get(api);

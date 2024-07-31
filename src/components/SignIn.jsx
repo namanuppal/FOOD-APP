@@ -10,6 +10,7 @@ function SignIn() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
+  // Check authentication on component mount
   useEffect(() => {
     const checkAuthentication = () => {
       const token = localStorage.getItem('token');
@@ -17,7 +18,7 @@ function SignIn() {
         navigate('/profile'); // Redirect if already logged in
       }
     };
-    
+
     checkAuthentication();
   }, [navigate]);
 
@@ -28,7 +29,7 @@ function SignIn() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const url = "https://api-production-f5b0.up.railway.app/signin";
+    const url = "https://api-production-f5b0.up.railway.app/api/v1/user/login";
   
     try {
       const response = await fetch(url, {
@@ -40,16 +41,16 @@ function SignIn() {
           email: formData.email,
           password: formData.password,
         }),
-        credentials: "include",
+        credentials: "include", // To include cookies (if your backend uses cookies)
       });
   
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "An error occurred");
+        throw new Error(errorData.message || "An error occurred");
       }
   
       const result = await response.json();
-      localStorage.setItem("token", result.token);
+      localStorage.setItem("token", result.token); // Store the token
       setMessage("Sign in successful!");
       navigate("/profile"); // Redirect to profile
       setError("");
