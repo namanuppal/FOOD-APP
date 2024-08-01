@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { api } from './api';
+import { api } from '../middleware/api';
 
 function FoodDetails() {
   const { id } = useParams();

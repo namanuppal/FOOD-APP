@@ -6,17 +6,13 @@ import {
   createBrowserRouter,
   createRoutesFromElements,
 } from "react-router-dom";
-import Home from "./components/Home";
-import SignIn from "./components/SignIn";
-import Cart from "./components/Cart";
-import Search from "./components/Search";
-import FoodDetails from "./components/FoodDetails";
-import RestaurantInfoDetails from "./components/RestaurantInfoDetails";
-import Verification from "./components/Verification";
-import SignUp from "./components/Signup";
-import Layout from "./Layout";
-import Profile from "./components/Profile";
-// import PrivateRoute from "./components/PrivateRoute";
+import Layout from './Layout.jsx';
+import Home from './components/Home.jsx';
+import Cart from './components/Cart.jsx';
+import Search from './components/Search.jsx';
+import FoodDetails from './components/FoodDetails.jsx';
+import RestaurantInfoDetails from './components/RestaurantInfoDetails.jsx';
+
 
 function App() {
   const router = createBrowserRouter(
@@ -24,17 +20,11 @@ function App() {
       <Route>
         <Route path="/" element={<Layout />}>
           <Route path="/" element={<Home />} />
-          <Route path="/signin" element={<SignIn />} />
-          <Route path="/signup" element={<SignUp />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/search" element={<Search />} />
           <Route path="/productDetails/:id" element={<FoodDetails />} />
-          <Route
-            path="/restaurantInfoDetails/:id"
-            element={<RestaurantInfoDetails />}
+          <Route path="/restaurantInfoDetails/:id" element={<RestaurantInfoDetails />}
           />
-          <Route path="/verify/:token" element={<Verification />} />
-          <Route path="/profile" element={<Profile />} />
         </Route>
       </Route>
     )

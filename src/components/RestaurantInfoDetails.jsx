@@ -4,7 +4,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { addToCart } from "../middleware/cart";
 import { useParams } from "react-router-dom";
-import { api } from "./api";
+import { api } from "../middleware/api";
 
 function RestaurantInfoDetails() {
   const { id } = useParams();

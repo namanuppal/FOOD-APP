@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getCart, clearCart } from '../middleware/cart.js'; // Ensure these functions handle cart state and operations correctly
-import paymentGateway from './paymentGateway.js'; // Ensure this function integrates with your payment system
-import { api } from './api.js';
+import paymentGateway from '../middleware/paymentGateway.js'; // Ensure this function integrates with your payment system
+import { api } from '../middleware/api.js';
 
 function Cart({ id }) {
   const [selectedRestaurant, setSelectedRestaurant] = useState(null);

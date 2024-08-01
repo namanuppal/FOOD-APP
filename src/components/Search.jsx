@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios'; // Axios for API requests
-import { api } from './api'; // Ensure this path is correct
+import { api } from '../middleware/api'; // Ensure this path is correct
 import { Link, useLocation } from 'react-router-dom';
 import { X } from 'react-feather'; // Import cross icon from react-feather
 
