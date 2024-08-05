@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { api } from '../middleware/api';
+import { api } from '../middleware/api.js';
 import { Link } from 'react-router-dom';
 
 const Homepage = () => {
@@ -40,7 +40,9 @@ const Homepage = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-4xl font-extrabold mb-8 text-center text-gray-800">
+      <h1 className="text-4xl font-extrabold mb-8 text-center text-gray-800" style={{
+            letterSpacing: '3px'
+          }}>
         The Delicious Foods
       </h1>
       {/* Wrapper for horizontal scrolling */}
@@ -59,7 +61,9 @@ const Homepage = () => {
                   className="w-full h-48 object-cover transition-transform duration-200 ease-in-out hover:scale-105"
                 />
               </Link>
-              <div className="p-4 text-center">
+              <div className="p-4 text-center" style={{
+            letterSpacing: '3px'
+          }}>
                 <h2 className="text-lg font-semibold text-gray-700">{food.category}</h2>
               </div>
             </div>

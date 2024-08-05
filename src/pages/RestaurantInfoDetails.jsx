@@ -87,7 +87,9 @@ function RestaurantInfoDetails() {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-center text-4xl font-extrabold my-8 text-gray-800">
+      <h1 style={{
+            letterSpacing: '3px'
+          }} className="text-center text-4xl font-extrabold my-8 text-gray-800">
         {restaurant.name}
       </h1>
       <div className="flex justify-center mb-8">
@@ -97,7 +99,9 @@ function RestaurantInfoDetails() {
           className="w-full max-w-4xl h-72 object-cover rounded-lg shadow-lg"
         />
       </div>
-      <h2 className="text-2xl font-semibold mb-6 text-gray-700">Menu</h2>
+      <h2 className="text-center bg-orange-500 text-white rounded-3xl text-2xl font-semibold mb-6 py-2" style={{
+            letterSpacing: '5px'
+          }}>Menu</h2>
 
       {restaurant.menu.map((category) => (
         <div key={category.id} className="mb-8">

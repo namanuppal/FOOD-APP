@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { api } from '../middleware/api';
+import { api } from '../middleware/api.js';
 
 function FoodDetails() {
   const { id } = useParams();
@@ -65,7 +65,9 @@ function FoodDetails() {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-center text-4xl font-extrabold my-8 text-gray-800">
+      <h1 className="text-center text-4xl font-extrabold my-8 text-gray-800" style={{
+            letterSpacing: '3px'
+          }}>
         Cafe and Restaurants
       </h1>
       {restaurants.length > 0 ? (

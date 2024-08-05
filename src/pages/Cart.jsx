@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { getCart, clearCart } from '../middleware/cart.js'; // Ensure these functions handle cart state and operations correctly
-import paymentGateway from '../middleware/paymentGateway.js'; // Ensure this function integrates with your payment system
+import { getCart, clearCart } from '../middleware/cart.js';
+import paymentGateway from '../middleware/paymentGateway.js';
 import { api } from '../middleware/api.js';
 
 function Cart({ id }) {
@@ -87,11 +87,15 @@ function Cart({ id }) {
 
   return (
     <div className='container mx-auto my-10 px-4'>
-      <h1 className='text-3xl font-bold text-center mb-8'>
+      <h1 className='text-3xl font-bold text-center mb-8' style={{
+            letterSpacing: '3px'
+          }}>
         Your Added Stuff is Here!
       </h1>
       {cartItems.length === 0 ? (
-        <p className='text-center text-xl'>Your cart is empty.</p>
+        <p className='text-center text-xl' style={{
+          letterSpacing: '3px'
+        }}>Your cart is empty.</p>
       ) : (
         <div>
           {selectedRestaurant?.menu &&

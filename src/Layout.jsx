@@ -10,7 +10,7 @@ function Layout() {
     <div>
      <Header />
       <Search />
-      <Outlet />
+      <Outlet  />
       <Footer />
       <FloatingCart />
     </div>
