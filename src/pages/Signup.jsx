@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { BsPersonCircle } from "react-icons/bs";
-import { toast } from "react-hot-toast";
-import { useDispatch } from "react-redux";
-import { createAccount } from "../redux/authSlice.js";
+import { useDispatch, useSelector } from "react-redux";
+import { createAccount } from "../redux/authSlice";
+import toast, { Toaster } from "react-hot-toast"; // Import toast
 
 const Signup = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const error = useSelector((state) => state.auth.error); // Redux se error state retrieve karna
 
-  const [previewImage, setImagePreview] = useState("");
   const [signupData, setSignupData] = useState({
     fullName: "",
     email: "",
@@ -17,152 +17,160 @@ const Signup = () => {
     avatar: null,
   });
 
-  // function to set the signup data
-  const handleUserInput = (event) => {
-    const { name, value } = event.target;
-    setSignupData((prevState) => ({
-      ...prevState,
+  const handleUserInput = (e) => {
+    const { name, value } = e.target;
+    setSignupData({
+      ...signupData,
       [name]: value,
-    }));
+    });
   };
 
-  // function to handle the image upload
-  const getImage = (event) => {
-    event.preventDefault();
-    const uploadedImage = event.target.files[0];
-    if (uploadedImage) {
-      setSignupData((prevState) => ({
-        ...prevState,
-        avatar: uploadedImage,
-      }));
-      const fileReader = new FileReader();
-      fileReader.onloadend = () => {
-        setImagePreview(fileReader.result);
-      };
-      fileReader.readAsDataURL(uploadedImage);
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setSignupData({
+        ...signupData,
+        avatar: file,
+      });
     }
   };
 
-  // function to create account
-  const createNewAccount = async (event) => {
-    event.preventDefault();
+  const handleImageClick = () => {
+    document.getElementById("avatarInput").click();
+  };
 
-    // Validate form data
-    if (!signupData.avatar || !signupData.email || !signupData.fullName || !signupData.password) {
-        toast.error("Please fill all the fields");
-        return;
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const { fullName, email, password, avatar } = signupData;
+
+    if (!fullName || !email || !password) {
+      toast.error("All fields are required!"); // Show error toast
+      return;
     }
-
-    // Create FormData
-    const formData = new FormData();
-    formData.append("fullName", signupData.fullName);
-    formData.append("email", signupData.email);
-    formData.append("password", signupData.password);
-    formData.append("avatar", signupData.avatar);
 
     try {
-        // Dispatch createAccount action
-        const resultAction = await dispatch(createAccount(formData));
+      const formData = new FormData();
+      formData.append("fullName", fullName);
+      formData.append("email", email);
+      formData.append("password", password);
+      if (avatar) {
+        formData.append("avatar", avatar);
+      }
 
-        if (createAccount.fulfilled.match(resultAction)) {
-            navigate("/login");
-        } else {
-            toast.error(resultAction.payload || "Failed to create account.");
-        }
-    } catch (error) {
-        toast.error("An error occurred while creating the account.");
+      const resultAction = await dispatch(createAccount(formData));
+
+      if (createAccount.fulfilled.match(resultAction)) {
+        // Registration successful
+        toast.success("Account created successfully!"); // Show success toast
+        navigate("/signin"); // Redirect to signin page
+      } else if (createAccount.rejected.match(resultAction)) {
+        // Error occurred during registration
+        toast.error(resultAction.payload || "Failed to create account"); // Show error toast
+      }
+    } catch (err) {
+      console.error("Signup error:", err);
+      toast.error("An unexpected error occurred"); // Show error toast
     }
-
-    // Clear form
-    setSignupData({
-        fullName: "",
-        email: "",
-        password: "",
-        avatar: null,
-    });
-    setImagePreview("");
-};
-
-  
+  };
 
   return (
-    <div className="flex items-center justify-center h-screen">
-      <form
-        onSubmit={createNewAccount}
-        className="flex flex-col justify-center gap-3 rounded-lg p-4 w-96 shadow-md"
-      >
-        <h1 className="text-center text-2xl font-bold">Registration Page</h1>
-        <label className="cursor-pointer" htmlFor="image_uploads">
-          {previewImage ? (
-            <img
-              className="w-24 h-24 rounded-full m-auto"
-              src={previewImage}
-              alt="preview"
+    <div className="flex justify-center items-center h-screen bg-orange-100">
+      <Toaster /> {/* Add the Toaster component for toast notifications */}
+      <div className="bg-white p-8 rounded-md shadow-md w-full max-w-md">
+        <div className="flex justify-center mb-4 text-orange-500">
+          <div
+            className="relative cursor-pointer"
+            onClick={handleImageClick}
+            title="Click to upload a profile picture"
+          >
+            {signupData.avatar ? (
+              <img
+                src={URL.createObjectURL(signupData.avatar)}
+                alt="Avatar Preview"
+                className="w-24 h-24 rounded-full object-cover"
+              />
+            ) : (
+              <BsPersonCircle size={96} />
+            )}
+          </div>
+          <input
+            type="file"
+            id="avatarInput"
+            name="avatar"
+            onChange={handleFileChange}
+            className="hidden"
+          />
+        </div>
+        <h2 className="text-2xl font-bold mb-4 text-center text-orange-500">
+          Create an Account
+        </h2>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="fullName"
+            >
+              Full Name
+            </label>
+            <input
+              type="text"
+              id="fullName"
+              name="fullName"
+              value={signupData.fullName}
+              onChange={handleUserInput}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              placeholder="Enter your full name"
             />
-          ) : (
-            <BsPersonCircle className="w-24 h-24 rounded-full m-auto" />
-          )}
-        </label>
-        <input
-          onChange={getImage}
-          className="hidden"
-          type="file"
-          id="image_uploads"
-          name="avatar"
-          accept=".jpg, .jpeg, .png"
-        />
-        <div className="flex flex-col gap-1">
-          <label className="font-semibold" htmlFor="fullName">Name</label>
-          <input
-            required
-            type="text"
-            name="fullName"
-            id="fullName"
-            placeholder="Enter your name"
-            className="bg-transparent px-2 py-1 border"
-            value={signupData.fullName}
-            onChange={handleUserInput}
-          />
-        </div>
-        <div className="flex flex-col gap-1">
-          <label className="font-semibold" htmlFor="email">Email</label>
-          <input
-            required
-            type="email"
-            name="email"
-            id="email"
-            placeholder="Enter your email"
-            className="bg-transparent px-2 py-1 border"
-            value={signupData.email}
-            onChange={handleUserInput}
-          />
-        </div>
-        <div className="flex flex-col gap-1">
-          <label className="font-semibold" htmlFor="password">Password</label>
-          <input
-            required
-            type="password"
-            name="password"
-            id="password"
-            placeholder="Enter your password"
-            className="bg-transparent px-2 py-1 border"
-            value={signupData.password}
-            onChange={handleUserInput}
-          />
-        </div>
-        <button
-          className="w-full bg-orange-500 hover:bg-orange-400 transition-all ease-in-out duration-300 rounded-3xl py-2 font-semibold text-lg cursor-pointer"
-          type="submit"
-        >
-          Create Account
-        </button>
-        <p className="text-center">
+          </div>
+          <div className="mb-4">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="email"
+            >
+              Email Address
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={signupData.email}
+              onChange={handleUserInput}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              placeholder="Enter your email address"
+            />
+          </div>
+          <div className="mb-4">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="password"
+            >
+              Password
+            </label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              value={signupData.password}
+              onChange={handleUserInput}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              placeholder="Enter your password"
+            />
+          </div>
+          <button
+            type="submit"
+            className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
+          >
+            Sign Up
+          </button>
+        </form>
+        <p className="text-center text-gray-600 text-sm mt-4">
           Already have an account?{" "}
-          <Link to="/login" className="text-accent cursor-pointer">
-            Login
+          <Link to="/signin" className="text-orange-500 font-bold">
+            Sign In
           </Link>
         </p>
-      </form>
+      </div>
     </div>
   );
 };
