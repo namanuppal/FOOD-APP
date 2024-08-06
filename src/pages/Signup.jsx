@@ -63,7 +63,7 @@ const Signup = () => {
       if (createAccount.fulfilled.match(resultAction)) {
         // Registration successful
         toast.success("Account created successfully!"); // Show success toast
-        navigate("/signin"); // Redirect to signin page
+        navigate("/login"); // Redirect to signin page
       } else if (createAccount.rejected.match(resultAction)) {
         // Error occurred during registration
         toast.error(resultAction.payload || "Failed to create account"); // Show error toast
@@ -166,7 +166,7 @@ const Signup = () => {
         </form>
         <p className="text-center text-gray-600 text-sm mt-4">
           Already have an account?{" "}
-          <Link to="/signin" className="text-orange-500 font-bold">
+          <Link to="/login" className="text-orange-500 font-bold">
             Sign In
           </Link>
         </p>
