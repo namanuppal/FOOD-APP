@@ -17,6 +17,9 @@ import Signup from "./pages/Signup.jsx";
 import Homepage from "./pages/Home.jsx";
 import Login from "./pages/Login.jsx";
 import VerifyEmail from "./pages/VerifyEmail.jsx";
+import Profile from "./pages/UserProfile/Profile.jsx";
+import EditProfile from "./pages/UserProfile/EditProfile.jsx";
+import RequireAuth from "./components/Auth/RequireAuth.jsx";
 
 function App() {
   const router = createBrowserRouter(
@@ -36,7 +39,10 @@ function App() {
 
         <Route path="*" element={<NotFound />} />
 
-
+      <Route element={<RequireAuth allowedRoles={["USER", "ADMIN"]} />}>
+      <Route path="/user/profile" element={<Profile />} />
+      <Route path="/user/editprofile" element={<EditProfile />} />
+      </Route>
 
         <Route path="/signup" element={<Signup />} />
         <Route path="/verify/:token" element={<VerifyEmail />} />

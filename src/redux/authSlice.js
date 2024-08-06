@@ -4,8 +4,8 @@ import axios from "axios";
 
 const initialState = {
   isLoggedIn: localStorage.getItem("isLoggedIn") === "true", // Ensure boolean value
-  data: JSON.parse(localStorage.getItem("data")) || {}, // Parse JSON string
   role: localStorage.getItem("role") || "",
+  data: JSON.parse(localStorage.getItem("data")) || {}, // Parse JSON string
   error: null, // Add error state
 };
 
@@ -91,6 +91,49 @@ export const verifyEmail = createAsyncThunk(
   }
 );
 
+// Function for Profile
+export const profile = createAsyncThunk(
+  '/auth/profile',
+  async (_, { rejectWithValue }) => { // Remove email from parameters
+    try {
+      const res = await axios.get(
+        'https://api-production-f5b0.up.railway.app/api/v1/user/me'
+      );
+
+      toast.success(res.data.message || "Your Profile is Here!");
+
+      return res.data;
+    } catch (error) {
+      const errorMessage = error?.response?.data?.message || "Failed to fetch profile";
+      toast.error(errorMessage);
+      return rejectWithValue(errorMessage);
+    }
+  }
+);
+
+// Function for Edit Profile
+export const updateProfile = createAsyncThunk(
+  '/auth/updateProfile',
+  async ({ id, data }, { rejectWithValue }) => {
+    try {
+      const res = await axios.put(
+        `https://api-production-f5b0.up.railway.app/api/v1/user/update/${id}`, 
+        data, 
+        { headers: { 'Content-Type': 'multipart/form-data' } } // Ensure headers are set for multipart data
+      );
+
+      toast.success(res.data.message || "Profile updated successfully");
+
+      return res.data;
+    } catch (error) {
+      const errorMessage = error?.response?.data?.message || "Failed to update profile";
+      toast.error(errorMessage);
+      return rejectWithValue(errorMessage);
+    }
+  }
+);
+
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -99,7 +142,7 @@ const authSlice = createSlice({
     builder
       .addCase(createAccount.fulfilled, (state, action) => {
         localStorage.setItem("data", JSON.stringify(action?.payload?.user));
-        localStorage.setItem("isLoggedIn", true);
+        localStorage.setItem("isLoggedIn", "true"); // Ensure value is a string
         localStorage.setItem("role", action?.payload?.user?.role);
         state.isLoggedIn = true;
         state.data = action?.payload?.user;
@@ -107,7 +150,7 @@ const authSlice = createSlice({
       })
       .addCase(login.fulfilled, (state, action) => {
         localStorage.setItem("data", JSON.stringify(action?.payload?.user));
-        localStorage.setItem("isLoggedIn", true);
+        localStorage.setItem("isLoggedIn", "true"); // Ensure value is a string
         localStorage.setItem("role", action?.payload?.user?.role);
         state.isLoggedIn = true;
         state.data = action?.payload?.user;
